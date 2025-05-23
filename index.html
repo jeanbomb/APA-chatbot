@@ -5,341 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>APA Hotel Woodbridge IG & FB 自動回覆機器人技術文件</title>
   <style>
-    /* 基本樣式 */
-    :root {
-      --primary-color: #004a99;
-      --text-color: #333;
-      --bg-color: #f9f9f9;
-      --container-width: 1200px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* 響應式基本設定 */
     body {
       font-family: "Noto Sans TC", "Noto Sans JP", "Noto Sans", sans-serif;
-      max-width: var(--container-width);
-      margin: clamp(8px, 2vw, 20px) auto;
-      padding: 0 clamp(8px, 3vw, 32px);
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 32px;
       line-height: 1.6;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: #f9f9f9;
+      color: #333;
     }
-
-    /* 響應式標題 */
-    h1 {
-      font-size: clamp(1.5rem, 5vw, 2.5rem);
-      margin: 1em 0;
-      word-wrap: break-word;
-    }
-
-    h2 {
-      font-size: clamp(1.2rem, 4vw, 2rem);
-      margin: 0.8em 0;
-    }
-
-    h3 {
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      margin: 0.6em 0;
-    }
-
-    /* 共用樣式 */
     h1, h2, h3 {
-      color: var(--primary-color);
-      line-height: 1.3;
+      color: #004a99;
     }
-
-    /* 響應式段落和列表 */
-    p, ul, ol {
-      margin-bottom: 1em;
-      font-size: clamp(0.9rem, 2vw, 1rem);
-    }
-
-    ul, ol {
-      padding-left: 1.5em;
-    }
-
-    /* 響應式程式碼區塊 */
     pre {
       background: #222;
       color: #eee;
-      padding: clamp(8px, 2vw, 16px);
+      padding: 10px;
       overflow-x: auto;
       border-radius: 4px;
-      font-size: clamp(12px, 2vw, 14px);
-      line-height: 1.5;
-      -webkit-overflow-scrolling: touch;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      font-size: 0.9em;
     }
-
-    /* 響應式表格容器 */
     .table-scroll-wrapper {
       overflow-x: auto;
       background: #fff;
       border-radius: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-      margin: 1em -8px 2em;
-      padding: 1em 0;
-      -webkit-overflow-scrolling: touch;
+      margin-bottom: 32px;
+      padding: 12px 0;
     }
-
-    /* 響應式表格 */
     table {
-      min-width: 600px;
+      min-width: 900px;
       width: 100%;
       border-collapse: collapse;
-      font-size: clamp(14px, 2vw, 16px);
+      margin: 15px 0;
     }
-
     table, th, td {
       border: 1px solid #ccc;
     }
-
     th, td {
-      padding: clamp(6px, 1.5vw, 12px);
-      text-align: left;
+      padding: 8px;
+      text-align: center;
     }
-
     th {
-      background-color: var(--primary-color);
+      background-color: #004a99;
       color: white;
-      white-space: nowrap;
     }
-
-    /* 響應式連結 */
     a {
-      color: var(--primary-color);
+      color: #004a99;
       text-decoration: none;
-      word-wrap: break-word;
     }
-
     a:hover {
       text-decoration: underline;
     }
-
-    /* 響應式區塊 */
     section {
-      margin-bottom: clamp(24px, 5vw, 40px);
-      background: #fff;
-      padding: clamp(16px, 3vw, 24px);
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
     }
-
-    /* 響應式頁尾 */
     footer {
       text-align: center;
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      font-size: 0.9em;
       color: #666;
-      padding: clamp(12px, 3vw, 20px) 0;
-      margin-top: clamp(24px, 5vw, 40px);
+      padding: 20px 0;
     }
-
-    /* 響應式語言切換按鈕 */
-    .lang-tabs-container {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--bg-color);
-      padding: 8px 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 20px;
-    }
-
     .lang-tab {
       cursor: pointer;
-      padding: clamp(6px, 2vw, 12px) clamp(8px, 3vw, 16px);
-      margin: 0 2px;
+      padding: 8px 16px;
+      margin: 0 4px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 4px 4px 0 0;
       background: #f0f0f0;
-      font-size: clamp(14px, 2vw, 16px);
-      transition: all 0.3s ease;
     }
-
-    .lang-tab:hover {
-      background: #e0e0e0;
-    }
-
     .lang-tab.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
+      background: #fff;
+      font-weight: bold;
+      border-bottom: 1px solid #fff;
     }
-
-    /* 語言內容區塊 */
     .lang-content {
       display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      padding: 24px 0 24px 0;
+      background: none;
     }
-
     .lang-content.active {
       display: block;
-      opacity: 1;
-    }
-
-    /* 行動裝置優化 */
-    @media (max-width: 768px) {
-      pre {
-        margin: 0 -8px;
-        border-radius: 0;
-      }
-
-      .table-scroll-wrapper {
-        margin: 1em -8px;
-        border-radius: 0;
-      }
-
-      section {
-        margin: 0 -8px 24px;
-        border-radius: 0;
-      }
-    }
-
-    /* 小螢幕優化 */
-    @media (max-width: 480px) {
-      body {
-        padding: 0 8px;
-      }
-
-      .lang-tab {
-        flex: 1;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      table {
-        min-width: auto;
-        font-size: 14px;
-      }
-
-      td, th {
-        padding: 6px;
-      }
-    }
-
-    /* 深色模式支援 */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-color: #1a1a1a;
-        --text-color: #e0e0e0;
-      }
-
-      body {
-        background: var(--bg-color);
-        color: var(--text-color);
-      }
-
-      section {
-        background: #2d2d2d;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      }
-
-      .table-scroll-wrapper {
-        background: #2d2d2d;
-      }
-
-      table, th, td {
-        border-color: #444;
-      }
-
-      td {
-        color: var(--text-color);
-      }
-
-      .lang-tab {
-        background: #333;
-        border-color: #444;
-        color: var(--text-color);
-      }
-
-      .lang-tab.active {
-        background: var(--primary-color);
-        color: white;
-      }
-
-      .lang-tab:hover {
-        background: #404040;
-      }
-
-      pre {
-        background: #000;
-        border: 1px solid #333;
-      }
-
-      a {
-        color: #66b3ff;
-      }
     }
   </style>
 </head>
 <body>
   <!-- 語言切換標籤 -->
-  <div class="lang-tabs-container">
+  <div style="margin-bottom: 20px;">
     <button class="lang-tab active" data-lang="zh">中文</button>
     <button class="lang-tab" data-lang="en">English</button>
     <button class="lang-tab" data-lang="jp">日本語</button>
   </div>
 
-  <!-- 主要內容容器 -->
-  <div class="main-container">
-
-    <!-- 中文內容 -->
-    <div class="lang-content active" id="lang-zh">
-      <h1>APA Hotel Woodbridge Instagram & Facebook 自動回覆機器人技術文件</h1>
-      <section>
-        <h2>目的</h2>
-        <p>打造一個可自動回覆 IG 和 Facebook 訊息的多語言聊天機器人，服務 APA Hotel Woodbridge 粉絲與潛在顧客。</p>
-      </section>
-      <section>
-        <h2>系統功能概述</h2>
-        <ul>
-          <li>支援平台：Instagram + Facebook Messenger</li>
-          <li>語言支援：中文、英文、日文（自動判斷）</li>
-          <li>功能內容：
-            <ul>
-              <li>回覆訂房連結</li>
-              <li>回覆飯店地址</li>
-              <li>回覆入住/退房時間</li>
-              <li>回覆一般感謝語</li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2>架構與技術</h2>
-        <ul>
-          <li>語言：Python</li>
-          <li>Web 框架：Flask</li>
-          <li>伺服器部署：Render</li>
-          <li>使用 Facebook Graph API</li>
-          <li>使用 Webhook 接收訊息事件</li>
-        </ul>
-      </section>
-      <section>
-        <h2>檔案結構</h2>
-        <pre>
+  <!-- 中文內容 -->
+  <div class="lang-content active" id="lang-zh">
+    <h1>APA Hotel Woodbridge Instagram & Facebook 自動回覆機器人技術文件</h1>
+    <section>
+      <h2>目的</h2>
+      <p>打造一個可自動回覆 IG 和 Facebook 訊息的多語言聊天機器人，服務 APA Hotel Woodbridge 粉絲與潛在顧客。</p>
+    </section>
+    <section>
+      <h2>系統功能概述</h2>
+      <ul>
+        <li>支援平台：Instagram + Facebook Messenger</li>
+        <li>語言支援：中文、英文、日文（自動判斷）</li>
+        <li>功能內容：
+          <ul>
+            <li>回覆訂房連結</li>
+            <li>回覆飯店地址</li>
+            <li>回覆入住/退房時間</li>
+            <li>回覆一般感謝語</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>架構與技術</h2>
+      <ul>
+        <li>語言：Python</li>
+        <li>Web 框架：Flask</li>
+        <li>伺服器部署：Render</li>
+        <li>使用 Facebook Graph API</li>
+        <li>使用 Webhook 接收訊息事件</li>
+      </ul>
+    </section>
+    <section>
+      <h2>檔案結構</h2>
+      <pre>
 project/
 ├── webhook.py            # 主程式
 ├── .env                  # 環境變數
-└── requirements.txt      # 套件清單（供 Render 使用）</pre>
-      </section>
-      <section>
-        <h2>.env 環境變數格式</h2>
-        <pre>
-VERIFY_TOKEN=your_verify_token_here</pre>
-      </section>
-      <section>
-        <h2>webhook.py 程式功能解說</h2>
-        <pre>
+└── requirements.txt      # 套件清單（供 Render 使用）
+      </pre>
+    </section>
+    <section>
+      <h2>.env 環境變數格式</h2>
+      <pre>
+VERIFY_TOKEN=your_verify_token_here
+      </pre>
+    </section>
+    <section>
+      <h2>webhook.py 程式功能解說</h2>
+      <pre>
 from flask import Flask, request
 import os
 from dotenv import load_dotenv
@@ -414,57 +221,168 @@ def send_message(recipient_id, text):
     # Meta Graph API 呼叫區（此範例僅打印）
 
 if __name__ == "__main__":
-    app.run(debug=True)</pre>
-      </section>
+    app.run(debug=True)
+      </pre>
+    </section>
+    <section>
+      <h2>部署到 Render</h2>
+      <ol>
+        <li>將程式 push 至 GitHub Repository</li>
+        <li>到 <a href="https://render.com" target="_blank">https://render.com</a> 註冊帳號</li>
+        <li>選擇：New &gt; Web Service</li>
+        <li>選擇語言：Python + 選擇 GitHub Repo</li>
+        <li>設定欄位：
+          <ul>
+            <li>Start command：<code>gunicorn webhook:app</code></li>
+            <li>Secret File：新增 <code>.env</code> 內容</li>
+          </ul>
+        </li>
+        <li>點擊 Deploy</li>
+        <li>複製 webhook URL，格式為：https://xxx.onrender.com/webhook</li>
+      </ol>
+    </section>
+    <section>
+      <h2>IG / FB 串接設定步驟</h2>
+      <h3>IG 必備條件</h3>
+      <ul>
+        <li>將 IG 帳號升級為商業帳號（專業帳號）</li>
+        <li>綁定一個 Facebook 粉專</li>
+      </ul>
+      <h3>Meta 開發者設定</h3>
+      <ol>
+        <li>前往 <a href="https://developers.facebook.com/" target="_blank">https://developers.facebook.com/</a></li>
+        <li>建立應用程式（類型：企業）</li>
+        <li>加入以下產品：
+          <ul>
+            <li>Instagram Graph API</li>
+            <li>Messenger</li>
+            <li>Webhooks</li>
+          </ul>
+        </li>
+        <li>Webhook 訂閱：
+          <ul>
+            <li>訂閱 <code>messages</code> 權限</li>
+            <li>填入驗證網址 + verify_token（與程式一致）</li>
+          </ul>
+        </li>
+        <li>設定權杖（使用 Graph API Explorer 取得 Page Access Token）</li>
+      </ol>
+    </section>
+    <section>
+      <h2>常見訊息與回覆範本</h2>
+      <div class="table-scroll-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>問題關鍵字</th>
+              <th>中文回覆</th>
+              <th>英文回覆</th>
+              <th>日文回覆</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>訂房</td>
+              <td>感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/</td>
+              <td>Thank you for your interest in APA Hotel Woodbridge. You can make a reservation here: https://www.apahotelwoodbridge.com/</td>
+              <td>ご予約はこちら：https://www.apahotelwoodbridge.com/</td>
+            </tr>
+            <tr>
+              <td>地址</td>
+              <td>地址：120 Wood Avenue South, Iselin, NJ 08830。</td>
+              <td>Our address is: 120 Wood Avenue South, Iselin, NJ 08830.</td>
+              <td>住所：120 Wood Avenue South, Iselin, NJ 08830。</td>
+            </tr>
+            <tr>
+              <td>入住</td>
+              <td>入住時間：下午3點，退房時間：上午11點。</td>
+              <td>Check-in time: 3:00 PM / Check-out: 11:00 AM.</td>
+              <td>チェックイン：15:00 / チェックアウト：11:00。</td>
+            </tr>
+            <tr>
+              <td>謝謝</td>
+              <td>謝謝您的訊息，我們將盡快回覆。</td>
+              <td>Thank you! We will get back to you shortly.</td>
+              <td>ありがとうございます。すぐに返信いたします。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>目前進度</h2>
+      <ul>
+        <li>完成 IG 和 Facebook Messenger 的基本自動回覆功能開發。</li>
+        <li>完成多語言（中、英、日）訊息判斷與回覆。</li>
+        <li>基礎關鍵字回覆邏輯已完成，包含訂房、地址、入住時間與感謝語。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>未完成項目 / 下一步建議</h2>
+      <ul>
+        <li>Render 部署測試，Webhook 可正常接收訊息。</li>
+        <li>增加更多自然語言處理能力，使語言判斷更準確。</li>
+        <li>完善 Facebook Graph API 的訊息發送功能，實際回覆使用者。</li>
+        <li>加入使用者訊息紀錄功能，方便後續分析與優化。</li>
+        <li>擴充更多常見問題的關鍵字與回覆內容。</li>
+        <li>設計聊天機器人多輪對話流程，提高互動性。</li>
+      </ul>
+    </section>
+    <footer>
+      <p>© 2025 APA Hotel Woodbridge 自動回覆機器人專案</p>
+    </footer>
+  </div>
 
-    <!-- 英文內容 -->
-    <div class="lang-content" id="lang-en">
-      <h1>APA Hotel Woodbridge Instagram & Facebook Auto-Reply Bot Documentation</h1>
-      <section>
-        <h2>Purpose</h2>
-        <p>Create a multilingual chatbot that can automatically reply to IG and Facebook messages, serving APA Hotel Woodbridge's fans and potential customers.</p>
-      </section>
-      <section>
-        <h2>System Features Overview</h2>
-        <ul>
-          <li>Supported Platforms: Instagram + Facebook Messenger</li>
-          <li>Language Support: Chinese, English, Japanese (Auto-detect)</li>
-          <li>Functions:
-            <ul>
-              <li>Reply with booking link</li>
-              <li>Reply with hotel address</li>
-              <li>Reply with check-in/check-out times</li>
-              <li>Reply with general thank you messages</li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2>Architecture & Technology</h2>
-        <ul>
-          <li>Language: Python</li>
-          <li>Web Framework: Flask</li>
-          <li>Server Deployment: Render</li>
-          <li>Using Facebook Graph API</li>
-          <li>Using Webhook for message event reception</li>
-        </ul>
-      </section>
-      <section>
-        <h2>File Structure</h2>
-        <pre>
+  <!-- 英文內容 -->
+  <div class="lang-content" id="lang-en">
+    <h1>APA Hotel Woodbridge Instagram & Facebook Auto-Reply Bot Technical Documentation</h1>
+    <section>
+      <h2>Purpose</h2>
+      <p>Create a multilingual chatbot that automatically replies to IG and Facebook messages, serving APA Hotel Woodbridge fans and potential customers.</p>
+    </section>
+    <section>
+      <h2>System Features Overview</h2>
+      <ul>
+        <li>Supported platforms: Instagram + Facebook Messenger</li>
+        <li>Language support: Chinese, English, Japanese (automatic detection)</li>
+        <li>Features:
+          <ul>
+            <li>Reply with booking link</li>
+            <li>Reply with hotel address</li>
+            <li>Reply with check-in/check-out time</li>
+            <li>Reply with general thank-you messages</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>Architecture & Technologies</h2>
+      <ul>
+        <li>Language: Python</li>
+        <li>Web framework: Flask</li>
+        <li>Server deployment: Render </li>
+        <li>Uses Facebook Graph API</li>
+        <li>Uses Webhook to receive message events</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Project Structure</h2>
+      <pre>
 project/
 ├── webhook.py            # Main program
 ├── .env                  # Environment variables
-└── requirements.txt      # Package list (for Render)</pre>
-      </section>
-      <section>
-        <h2>.env Environment Variables Format</h2>
-        <pre>
-VERIFY_TOKEN=your_verify_token_here</pre>
-      </section>
-      <section>
-        <h2>webhook.py Program Functions Explanation</h2>
-        <pre>
+└── requirements.txt      # Package list (for Render)
+      </pre>
+    </section>
+    <section>
+      <h2>.env Environment Variable Format</h2>
+      <pre>
+VERIFY_TOKEN=your_verify_token_here
+      </pre>
+    </section>
+    <section>
+      <h2>webhook.py Code Explanation</h2>
+      <pre>
 from flask import Flask, request
 import os
 from dotenv import load_dotenv
@@ -492,7 +410,7 @@ REPLIES = {
     }
 }
 
-# Language detection (simplified method)
+# Simple language detection
 def detect_lang(text):
     if any(word in text.lower() for word in ["的", "請問", "您好"]):
         return "zh"
@@ -536,61 +454,171 @@ def webhook():
 
 def send_message(recipient_id, text):
     print(f"[Bot] ➜ to {recipient_id}: {text}")
-    # Meta Graph API call section (print only in this example)
+    # Meta Graph API call (this example just prints)
 
 if __name__ == "__main__":
-    app.run(debug=True)</pre>
-      </section>
-    </div>
+    app.run(debug=True)
+      </pre>
+    </section>
+    <section>
+      <h2>Deploy to Render</h2>
+      <ol>
+        <li>Push the code to your GitHub Repository</li>
+        <li>Register on <a href="https://render.com" target="_blank">https://render.com</a></li>
+        <li>Select: New &gt; Web Service</li>
+        <li>Select language: Python + select your GitHub Repo</li>
+        <li>Configure:
+          <ul>
+            <li>Start command: <code>gunicorn webhook:app</code></li>
+            <li>Secret File: add your <code>.env</code> contents</li>
+          </ul>
+        </li>
+        <li>Click Deploy</li>
+        <li>Copy the webhook URL, e.g.: https://xxx.onrender.com/webhook</li>
+      </ol>
+    </section>
+    <section>
+      <h2>IG / FB Integration Steps</h2>
+      <h3>IG Requirements</h3>
+      <ul>
+        <li>Upgrade your IG account to a Business (Professional) Account</li>
+        <li>Bind to a Facebook Page</li>
+      </ul>
+      <h3>Meta Developer Settings</h3>
+      <ol>
+        <li>Visit <a href="https://developers.facebook.com/" target="_blank">https://developers.facebook.com/</a></li>
+        <li>Create an app (Type: Business)</li>
+        <li>Add the following products:
+          <ul>
+            <li>Instagram Graph API</li>
+            <li>Messenger</li>
+            <li>Webhooks</li>
+          </ul>
+        </li>
+        <li>Webhook subscription:
+          <ul>
+            <li>Subscribe to <code>messages</code> permission</li>
+            <li>Enter the verification URL + verify_token (same as in your code)</li>
+          </ul>
+        </li>
+        <li>Set up tokens (use Graph API Explorer to get Page Access Token)</li>
+      </ol>
+    </section>
+    <section>
+      <h2>Common Message & Reply Samples</h2>
+      <div class="table-scroll-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Keyword</th>
+              <th>Chinese Reply</th>
+              <th>English Reply</th>
+              <th>Japanese Reply</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Booking</td>
+              <td>感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/</td>
+              <td>Thank you for your interest in APA Hotel Woodbridge. You can make a reservation here: https://www.apahotelwoodbridge.com/</td>
+              <td>ご予約はこちら：https://www.apahotelwoodbridge.com/</td>
+            </tr>
+            <tr>
+              <td>Address</td>
+              <td>地址：120 Wood Avenue South, Iselin, NJ 08830。</td>
+              <td>Our address is: 120 Wood Avenue South, Iselin, NJ 08830.</td>
+              <td>住所：120 Wood Avenue South, Iselin, NJ 08830。</td>
+            </tr>
+            <tr>
+              <td>Check-in</td>
+              <td>入住時間：下午3點，退房時間：上午11點。</td>
+              <td>Check-in time: 3:00 PM / Check-out: 11:00 AM.</td>
+              <td>チェックイン：15:00 / チェックアウト：11:00。</td>
+            </tr>
+            <tr>
+              <td>Thank you</td>
+              <td>謝謝您的訊息，我們將盡快回覆。</td>
+              <td>Thank you! We will get back to you shortly.</td>
+              <td>ありがとうございます。すぐに返信いたします。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>Progress</h2>
+      <ul>
+        <li>Completed basic auto-reply feature for IG and Facebook Messenger.</li>
+        <li>Implemented multilingual (Chinese, English, Japanese) message detection and replies.</li>
+        <li>Basic keyword reply logic completed, including booking, address, check-in time, and thank-you messages.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Pending Tasks / Next Steps</h2>
+      <ul>
+        <li>Test deployment on Render, ensure webhook receives messages properly.</li>
+        <li>Add more natural language processing capabilities for better language detection.</li>
+        <li>Improve Facebook Graph API message sending for real user replies.</li>
+        <li>Add user message logging for future analysis and optimization.</li>
+        <li>Expand more common Q&A keywords and replies.</li>
+        <li>Design multi-turn conversation flow for more interactive chatbot.</li>
+      </ul>
+    </section>
+    <footer>
+      <p>© 2025 APA Hotel Woodbridge Auto-Reply Bot Project</p>
+    </footer>
+  </div>
 
-    <!-- 日文內容 -->
-    <div class="lang-content" id="lang-jp">
-      <h1>APA Hotel Woodbridge Instagram & Facebook 自動返信ボット技術文書</h1>
-      <section>
-        <h2>目的</h2>
-        <p>APA Hotel Woodbridgeのファンや潜在的な顧客向けに、IGとFacebookメッセージに自動返信できる多言語チャットボットを構築します。</p>
-      </section>
-      <section>
-        <h2>システム機能概要</h2>
-        <ul>
-          <li>対応プラットフォーム：Instagram + Facebook Messenger</li>
-          <li>対応言語：中国語、英語、日本語（自動判別）</li>
-          <li>機能内容：
-            <ul>
-              <li>予約リンクの返信</li>
-              <li>ホテルの住所の返信</li>
-              <li>チェックイン/チェックアウト時間の返信</li>
-              <li>一般的なお礼の返信</li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2>アーキテクチャと技術</h2>
-        <ul>
-          <li>言語：Python</li>
-          <li>Webフレームワーク：Flask</li>
-          <li>サーバー配置：Render</li>
-          <li>Facebook Graph APIを使用</li>
-          <li>Webhookでメッセージイベントを受信</li>
-        </ul>
-      </section>
-      <section>
-        <h2>ファイル構造</h2>
-        <pre>
+  <!-- 日文內容 -->
+  <div class="lang-content" id="lang-jp">
+    <h1>APAホテルウッドブリッジ Instagram & Facebook 自動応答ボット技術ドキュメント</h1>
+    <section>
+      <h2>目的</h2>
+      <p>APAホテルウッドブリッジのファンや潜在顧客向けに、IGとFacebookのメッセージに自動返信する多言語チャットボットを作成します。</p>
+    </section>
+    <section>
+      <h2>システム機能概要</h2>
+      <ul>
+        <li>対応プラットフォーム：Instagram + Facebook Messenger</li>
+        <li>対応言語：中国語、英語、日本語（自動判別）</li>
+        <li>主な機能：
+          <ul>
+            <li>予約リンクの返信</li>
+            <li>ホテル住所の返信</li>
+            <li>チェックイン／チェックアウト時間の返信</li>
+            <li>感謝メッセージの返信</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>構成と技術</h2>
+      <ul>
+        <li>使用言語：Python</li>
+        <li>ウェブフレームワーク：Flask</li>
+        <li>サーバー配備：Render</li>
+        <li>Facebook Graph API を利用</li>
+        <li>Webhookでメッセージイベントを受信</li>
+      </ul>
+    </section>
+    <section>
+      <h2>ファイル構造</h2>
+      <pre>
 project/
 ├── webhook.py            # メインプログラム
 ├── .env                  # 環境変数
-└── requirements.txt      # パッケージリスト（Render用）</pre>
-      </section>
-      <section>
-        <h2>.env 環境変数フォーマット</h2>
-        <pre>
-VERIFY_TOKEN=your_verify_token_here</pre>
-      </section>
-      <section>
-        <h2>webhook.py プログラム機能説明</h2>
-        <pre>
+└── requirements.txt      # パッケージリスト（Render用）
+      </pre>
+    </section>
+    <section>
+      <h2>.env 環境変数フォーマット</h2>
+      <pre>
+VERIFY_TOKEN=your_verify_token_here
+      </pre>
+    </section>
+    <section>
+      <h2>webhook.py コード説明</h2>
+      <pre>
 from flask import Flask, request
 import os
 from dotenv import load_dotenv
@@ -607,116 +635,4 @@ REPLIES = {
         "zh": "感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/"
     },
     "location": {
-        "en": "Our address is: 120 Wood Avenue South, Iselin, NJ 08830.",
-        "ja": "住所：120 Wood Avenue South, Iselin, NJ 08830。",
-        "zh": "地址：120 Wood Avenue South, Iselin, NJ 08830。"
-    },
-    "checkin": {
-        "en": "Check-in time: 3:00 PM / Check-out: 11:00 AM.",
-        "ja": "チェックイン：15:00 / チェックアウト：11:00。",
-        "zh": "入住時間：下午3點，退房時間：上午11點。"
-    }
-}
-
-# 言語検出（簡略化された方法）
-def detect_lang(text):
-    if any(word in text.lower() for word in ["的", "請問", "您好"]):
-        return "zh"
-    elif any(word in text.lower() for word in ["です", "予約", "こんにちは"]):
-        return "ja"
-    else:
-        return "en"
-
-@app.route("/webhook", methods=["GET", "POST"])
-def webhook():
-    if request.method == "GET":
-        token = request.args.get("hub.verify_token")
-        challenge = request.args.get("hub.challenge")
-        return challenge if token == VERIFY_TOKEN else "Invalid token"
-
-    if request.method == "POST":
-        data = request.get_json()
-        print("Incoming:", data)
-
-        for entry in data.get("entry", []):
-            for messaging in entry.get("messaging", []):
-                sender_id = messaging["sender"]["id"]
-                message_text = messaging.get("message", {}).get("text", "")
-                lang = detect_lang(message_text)
-
-                if "訂房" in message_text or "book" in message_text.lower() or "予約" in message_text:
-                    reply_text = REPLIES["booking"][lang]
-                elif "地址" in message_text or "address" in message_text.lower():
-                    reply_text = REPLIES["location"][lang]
-                elif "入住" in message_text or "check-in" in message_text.lower():
-                    reply_text = REPLIES["checkin"][lang]
-                else:
-                    reply_text = {
-                        "en": "Thank you! We will get back to you shortly.",
-                        "zh": "謝謝您的訊息，我們將盡快回覆。",
-                        "ja": "ありがとうございます。すぐに返信いたします。"
-                    }[lang]
-
-                send_message(sender_id, reply_text)
-        return "OK", 200
-
-def send_message(recipient_id, text):
-    print(f"[Bot] ➜ to {recipient_id}: {text}")
-    # Meta Graph APIコール部分（この例では表示のみ）
-
-if __name__ == "__main__":
-    app.run(debug=True)</pre>
-      </section>
-    </div>
-  </div>
-
-  <!-- 改進的語言切換腳本 -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const tabs = document.querySelectorAll('.lang-tab');
-      const contents = document.querySelectorAll('.lang-content');
-      
-      // 檢查並載入已儲存的語言偏好
-      const savedLang = localStorage.getItem('preferred-language');
-      
-      // 切換語言函數
-      function switchLanguage(lang) {
-        tabs.forEach(t => t.classList.remove('active'));
-        contents.forEach(c => c.classList.remove('active'));
-        
-        const selectedTab = document.querySelector(`[data-lang="${lang}"]`);
-        const selectedContent = document.getElementById(`lang-${lang}`);
-        
-        if (selectedTab && selectedContent) {
-          selectedTab.classList.add('active');
-          selectedContent.classList.add('active');
-          localStorage.setItem('preferred-language', lang);
-        }
-      }
-
-      // 為每個語言標籤添加點擊事件
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          switchLanguage(tab.dataset.lang);
-        });
-      });
-
-      // 如果有已儲存的語言偏好，則載入對應的語言
-      if (savedLang) {
-        switchLanguage(savedLang);
-      }
-
-      // 監聽系統深色模式變更
-      if (window.matchMedia) {
-        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const toggleDarkMode = (e) => {
-          document.body.classList.toggle('dark-mode', e.matches);
-        };
-        
-        darkModeMediaQuery.addListener(toggleDarkMode);
-        toggleDarkMode(darkModeMediaQuery);
-      }
-    });
-  </script>
-</body>
-</html>
+        "en": "Our address is: 120 Wood Avenue South, Iselin,
