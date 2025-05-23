@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APA Hotel Woodbridge IG & FB 自動回覆機器人技術文件</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #004a99;
+    }
+    pre {
+      background: #222;
+      color: #eee;
+      padding: 10px;
+      overflow-x: auto;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #004a99;
+      color: white;
+    }
+    a {
+      color: #004a99;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>APA Hotel Woodbridge Instagram & Facebook 自動回覆機器人技術文件</h1>
+
+  <section>
+    <h2>📌 目的</h2>
+    <p>打造一個可自動回覆 IG 和 Facebook 訊息的多語言聊天機器人，服務 APA Hotel Woodbridge 粉絲與潛在顧客。</p>
+  </section>
+
+  <section>
+    <h2>✅ 系統功能概述</h2>
+    <ul>
+      <li>支援平台：Instagram + Facebook Messenger</li>
+      <li>語言支援：中文、英文、日文（自動判斷）</li>
+      <li>功能內容：
+        <ul>
+          <li>回覆訂房連結</li>
+          <li>回覆飯店地址</li>
+          <li>回覆入住/退房時間</li>
+          <li>回覆一般感謝語</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🛠️ 架構與技術</h2>
+    <ul>
+      <li>語言：Python</li>
+      <li>Web 框架：Flask</li>
+      <li>伺服器部署：Render（推薦）</li>
+      <li>使用 Facebook Graph API</li>
+      <li>使用 Webhook 接收訊息事件</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📁 檔案結構</h2>
+    <pre>
+project/
+├── webhook.py            # 主程式
+├── .env                  # 環境變數（不提交 GitHub）
+└── requirements.txt      # 套件清單（供 Render 使用）
+    </pre>
+  </section>
+
+  <section>
+    <h2>🔐 .env 環境變數格式</h2>
+    <pre>
+VERIFY_TOKEN=your_verify_token_here
+    </pre>
+  </section>
+
+  <section>
+    <h2>🧠 webhook.py 程式功能解說</h2>
+    <pre>
+from flask import Flask, request
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+app = Flask(__name__)
+
+REPLIES = {
+    "booking": {
+        "en": "Thank you for your interest in APA Hotel Woodbridge. You can make a reservation here: https://www.apahotelwoodbridge.com/",
+        "ja": "ご予約はこちら：https://www.apahotelwoodbridge.com/",
+        "zh": "感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/"
+    },
+    "location": {
+        "en": "Our address is: 120 Wood Avenue South, Iselin, NJ 08830.",
+        "ja": "住所：120 Wood Avenue South, Iselin, NJ 08830。",
+        "zh": "地址：120 Wood Avenue South, Iselin, NJ 08830。"
+    },
+    "checkin": {
+        "en": "Check-in time: 3:00 PM / Check-out: 11:00 AM.",
+        "ja": "チェックイン：15:00 / チェックアウト：11:00。",
+        "zh": "入住時間：下午3點，退房時間：上午11點。"
+    }
+}
+
+# 偵測語言（簡化方式）
+def detect_lang(text):
+    if any(word in text.lower() for word in ["的", "請問", "您好"]):
+        return "zh"
+    elif any(word in text.lower() for word in ["です", "予約", "こんにちは"]):
+        return "ja"
+    else:
+        return "en"
+
+@app.route("/webhook", methods=["GET", "POST"])
+def webhook():
+    if request.method == "GET":
+        token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+        return challenge if token == VERIFY_TOKEN else "Invalid token"
+
+    if request.method == "POST":
+        data = request.get_json()
+        print("Incoming:", data)
+
+        for entry in data.get("entry", []):
+            for messaging in entry.get("messaging", []):
+                sender_id = messaging["sender"]["id"]
+                message_text = messaging.get("message", {}).get("text", "")
+                lang = detect_lang(message_text)
+
+                if "訂房" in message_text or "book" in message_text.lower() or "予約" in message_text:
+                    reply_text = REPLIES["booking"][lang]
+                elif "地址" in message_text or "address" in message_text.lower():
+                    reply_text = REPLIES["location"][lang]
+                elif "入住" in message_text or "check-in" in message_text.lower():
+                    reply_text = REPLIES["checkin"][lang]
+                else:
+                    reply_text = {
+                        "en": "Thank you! We will get back to you shortly.",
+                        "zh": "謝謝您的訊息，我們將盡快回覆。",
+                        "ja": "ありがとうございます。すぐに返信いたします。"
+                    }[lang]
+
+                send_message(sender_id, reply_text)
+        return "OK", 200
+
+def send_message(recipient_id, text):
+    print(f"[Bot] ➜ to {recipient_id}: {text}")
+    # Meta Graph API 呼叫區（此範例僅打印）
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    </pre>
+  </section>
+
+  <section>
+    <h2>🚀 部署到 Render</h2>
+    <ol>
+      <li>將程式 push 至 GitHub Repository</li>
+      <li>到 <a href="https://render.com" target="_blank">https://render.com</a> 註冊帳號</li>
+      <li>選擇：New &gt; Web Service</li>
+      <li>選擇語言：Python + 選擇 GitHub Repo</li>
+      <li>設定欄位：
+        <ul>
+          <li>Start command：<code>gunicorn webhook:app</code></li>
+          <li>Secret File：新增 <code>.env</code> 內容</li>
+        </ul>
+      </li>
+      <li>點擊 Deploy</li>
+      <li>複製 webhook URL，格式為：https://xxx.onrender.com/webhook</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>🔗 IG / FB 串接設定步驟</h2>
+    <h3>IG 必備條件</h3>
+    <ul>
+      <li>將 IG 帳號升級為商業帳號（專業帳號）</li>
+      <li>綁定一個 Facebook 粉專</li>
+    </ul>
+
+    <h3>Meta 開發者設定</h3>
+    <ol>
+      <li>前往 <a href="https://developers.facebook.com/" target="_blank">https://developers.facebook.com/</a></li>
+      <li>建立應用程式（類型：企業）</li>
+      <li>加入以下產品：
+        <ul>
+          <li>Instagram Graph API</li>
+          <li>Messenger</li>
+          <li>Webhooks</li>
+        </ul>
+      </li>
+      <li>Webhook 訂閱：
+        <ul>
+          <li>訂閱 <code>messages</code> 權限</li>
+          <li>填入驗證網址 + verify_token（與程式一致）</li>
+        </ul>
+      </li>
+      <li>設定權杖（使用 Graph API Explorer 取得 Page Access Token）</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>📚 常見訊息與回覆範本</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>問題關鍵字</th>
+          <th>中文回覆</th>
+          <th>英文回覆</th>
+          <th>日文回覆</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>訂房</td>
+          <td>感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/</td>
+          <td>Thank you for your interest in APA Hotel Woodbridge. You can make a reservation here: https://www.apahotelwoodbridge.com/</td>
+          <td>ご予約はこちら：https://www.apahotelwoodbridge.com/</td>
+        </tr>
+        <tr>
+          <td>地址</td>
+          <td>地址：120 Wood Avenue South, Iselin, NJ 08830。</td>
+          <td>Our address is: 120 Wood Avenue South, Iselin, NJ 08830.</td>
+          <td>住所：120 Wood Avenue South, Iselin, NJ 08830。</td>
+        </tr>
+        <tr>
+          <td>入住</td>
+          <td>入住時間：下午3點，退房時間：上午11點。</td>
+          <td>Check-in time: 3:00 PM / Check-out: 11:00 AM.</td>
+          <td>チェックイン：15:00 / チェックアウト：11:00。</td>
+        </tr>
+        <tr>
+          <td>謝謝</td>
+          <td>謝謝您的訊息，我們將盡快回覆。</td>
+          <td>Thank you! We will get back to you shortly.</td>
+          <td>ありがとうございます。すぐに返信いたします。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+<section>
+  <h2>🔄 目前進度</h2>
+  <ul>
+    <li>完成 IG 和 Facebook Messenger 的基本自動回覆功能開發。</li>
+    <li>完成多語言（中、英、日）訊息判斷與回覆。</li>
+    <li>基礎關鍵字回覆邏輯已完成，包含訂房、地址、入住時間與感謝語。</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🛠️ 未完成項目 / 下一步建議</h2>
+  <ul>
+    <li> Render 部署測試，Webhook 可正常接收訊息。</li>
+    <li>增加更多自然語言處理能力，使語言判斷更準確。</li>
+    <li>完善 Facebook Graph API 的訊息發送功能，實際回覆使用者。</li>
+    <li>加入使用者訊息紀錄功能，方便後續分析與優化。</li>
+    <li>擴充更多常見問題的關鍵字與回覆內容。</li>
+    <li>設計聊天機器人多輪對話流程，提高互動性。</li>
+  </ul>
+</section>
+
+
+  <footer>
+    <p>© 2025 APA Hotel Woodbridge 自動回覆機器人專案</p>
+  </footer>
+</body>
+</html>
