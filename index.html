@@ -568,7 +568,6 @@ if __name__ == "__main__":
       <p>© 2025 APA Hotel Woodbridge Auto-Reply Bot Project</p>
     </footer>
   </div>
-
   <!-- 日文內容 -->
   <div class="lang-content" id="lang-jp">
     <h1>APAホテルウッドブリッジ Instagram & Facebook 自動応答ボット技術ドキュメント</h1>
@@ -635,4 +634,188 @@ REPLIES = {
         "zh": "感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/"
     },
     "location": {
-        "en": "Our address is: 120 Wood Avenue South, Iselin,
+        "en": "Our address is: 120 Wood Avenue South, Iselin, NJ 08830.",
+        "ja": "住所：120 Wood Avenue South, Iselin, NJ 08830。",
+        "zh": "地址：120 Wood Avenue South, Iselin, NJ 08830。"
+    },
+    "checkin": {
+        "en": "Check-in time: 3:00 PM / Check-out: 11:00 AM.",
+        "ja": "チェックイン：15:00 / チェックアウト：11:00。",
+        "zh": "入住時間：下午3點，退房時間：上午11點。"
+    }
+}
+
+# 簡易言語判定
+def detect_lang(text):
+    if any(word in text.lower() for word in ["的", "請問", "您好"]):
+        return "zh"
+    elif any(word in text.lower() for word in ["です", "予約", "こんにちは"]):
+        return "ja"
+    else:
+        return "en"
+
+@app.route("/webhook", methods=["GET", "POST"])
+def webhook():
+    if request.method == "GET":
+        token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+        return challenge if token == VERIFY_TOKEN else "Invalid token"
+
+    if request.method == "POST":
+        data = request.get_json()
+        print("Incoming:", data)
+
+        for entry in data.get("entry", []):
+            for messaging in entry.get("messaging", []):
+                sender_id = messaging["sender"]["id"]
+                message_text = messaging.get("message", {}).get("text", "")
+                lang = detect_lang(message_text)
+
+                if "訂房" in message_text or "book" in message_text.lower() or "予約" in message_text:
+                    reply_text = REPLIES["booking"][lang]
+                elif "地址" in message_text or "address" in message_text.lower():
+                    reply_text = REPLIES["location"][lang]
+                elif "入住" in message_text or "check-in" in message_text.lower():
+                    reply_text = REPLIES["checkin"][lang]
+                else:
+                    reply_text = {
+                        "en": "Thank you! We will get back to you shortly.",
+                        "zh": "謝謝您的訊息，我們將盡快回覆。",
+                        "ja": "ありがとうございます。すぐに返信いたします。"
+                    }[lang]
+
+                send_message(sender_id, reply_text)
+        return "OK", 200
+
+def send_message(recipient_id, text):
+    print(f"[Bot] ➜ to {recipient_id}: {text}")
+    # Meta Graph API呼び出し（例：今回はprintのみ）
+
+if __name__ == "__main__":
+    app.run(debug=True)
+      </pre>
+    </section>
+    <section>
+      <h2>Render へのデプロイ</h2>
+      <ol>
+        <li>プログラムをGitHubリポジトリにpush</li>
+        <li><a href="https://render.com" target="_blank">https://render.com</a> でアカウント登録</li>
+        <li>New &gt; Web Service を選択</li>
+        <li>言語はPythonを選択し、GitHubリポジトリを指定</li>
+        <li>設定項目：
+          <ul>
+            <li>Start command：<code>gunicorn webhook:app</code></li>
+            <li>Secret File：<code>.env</code>内容を追加</li>
+          </ul>
+        </li>
+        <li>Deployをクリック</li>
+        <li>Webhook URLをコピー（例：https://xxx.onrender.com/webhook）</li>
+      </ol>
+    </section>
+    <section>
+      <h2>IG / FB 連携手順</h2>
+      <h3>IG 必須条件</h3>
+      <ul>
+        <li>IGアカウントをビジネス（プロ）アカウントへアップグレード</li>
+        <li>Facebookページと連携</li>
+      </ul>
+      <h3>Meta開発者設定</h3>
+      <ol>
+        <li><a href="https://developers.facebook.com/" target="_blank">https://developers.facebook.com/</a> にアクセス</li>
+        <li>アプリを作成（種類：ビジネス）</li>
+        <li>以下のプロダクトを追加：
+          <ul>
+            <li>Instagram Graph API</li>
+            <li>Messenger</li>
+            <li>Webhooks</li>
+          </ul>
+        </li>
+        <li>Webhook購読：
+          <ul>
+            <li><code>messages</code>パーミッションを購読</li>
+            <li>検証URL＋verify_token（プログラムと同じ値）を入力</li>
+          </ul>
+        </li>
+        <li>トークン設定（Graph API ExplorerでPage Access Token取得）</li>
+      </ol>
+    </section>
+    <section>
+      <h2>よくあるメッセージと返信例</h2>
+      <div class="table-scroll-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>キーワード</th>
+              <th>中国語の返信</th>
+              <th>英語の返信</th>
+              <th>日本語の返信</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>予約</td>
+              <td>感謝您聯絡 APA Hotel Woodbridge。訂房請點選：https://www.apahotelwoodbridge.com/</td>
+              <td>Thank you for your interest in APA Hotel Woodbridge. You can make a reservation here: https://www.apahotelwoodbridge.com/</td>
+              <td>ご予約はこちら：https://www.apahotelwoodbridge.com/</td>
+            </tr>
+            <tr>
+              <td>住所</td>
+              <td>地址：120 Wood Avenue South, Iselin, NJ 08830。</td>
+              <td>Our address is: 120 Wood Avenue South, Iselin, NJ 08830.</td>
+              <td>住所：120 Wood Avenue South, Iselin, NJ 08830。</td>
+            </tr>
+            <tr>
+              <td>チェックイン</td>
+              <td>入住時間：下午3點，退房時間：上午11點。</td>
+              <td>Check-in time: 3:00 PM / Check-out: 11:00 AM.</td>
+              <td>チェックイン：15:00 / チェックアウト：11:00。</td>
+            </tr>
+            <tr>
+              <td>ありがとう</td>
+              <td>謝謝您的訊息，我們將盡快回覆。</td>
+              <td>Thank you! We will get back to you shortly.</td>
+              <td>ありがとうございます。すぐに返信いたします。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>進捗状況</h2>
+      <ul>
+        <li>IGとFacebook Messengerの基本自動応答機能の開発を完了。</li>
+        <li>多言語（中・英・日）メッセージ判定と返信を実装。</li>
+        <li>予約・住所・チェックイン時間・感謝語の基本キーワード返信ロジック完成。</li>
+      </ul>
+    </section>
+    <section>
+      <h2>未完了項目／今後の提案</h2>
+      <ul>
+        <li>Renderでの配備テストとWebhookの正常受信確認。</li>
+        <li>より高精度な自然言語処理での言語判別機能追加。</li>
+        <li>Facebook Graph APIでのユーザー実応答機能強化。</li>
+        <li>ユーザーメッセージログ機能追加による分析性向上。</li>
+        <li>よくある質問のキーワード・返信内容拡充。</li>
+        <li>多段階対話の設計によるチャットボットの対話性向上。</li>
+      </ul>
+    </section>
+    <footer>
+      <p>© 2025 APAホテルウッドブリッジ 自動応答ボットプロジェクト</p>
+    </footer>
+  </div>
+
+  <!-- 語言切換腳本 -->
+  <script>
+    const tabs = document.querySelectorAll('.lang-tab');
+    const contents = document.querySelectorAll('.lang-content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        contents.forEach(c => c.classList.remove('active'));
+        document.getElementById('lang-' + tab.dataset.lang).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
